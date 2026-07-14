@@ -10,6 +10,7 @@ export interface NavContent {
   links: { label: string; href: string }[]
   signIn: string
   getStarted: string
+  account: string
   openMenu: string
   closeMenu: string
   themeLight: string
@@ -174,6 +175,7 @@ export const content: Record<Lang, Content> = {
       ],
       signIn: 'Sign in',
       getStarted: 'Get started',
+      account: 'My account',
       openMenu: 'Open menu',
       closeMenu: 'Close menu',
       themeLight: 'Switch to light mode',
@@ -520,6 +522,7 @@ export const content: Record<Lang, Content> = {
       ],
       signIn: 'Anmelden',
       getStarted: 'Loslegen',
+      account: 'Mein Konto',
       openMenu: 'Menü öffnen',
       closeMenu: 'Menü schließen',
       themeLight: 'Zum hellen Modus wechseln',

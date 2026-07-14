@@ -84,8 +84,11 @@ export function AppShell() {
       <header className="glass fixed inset-x-0 top-0 z-40 border-b">
         <div className="mx-auto flex h-16 max-w-content items-center justify-between gap-3 px-4 sm:px-6">
           <div className="flex items-center gap-3">
+            {/* Logo doubles as the way back to the landing page */}
             <Link
-              to="/app"
+              to="/"
+              aria-label={ta.common.backToSite}
+              title={ta.common.backToSite}
               className="inline-flex items-center gap-2 font-semibold tracking-tight text-ink"
             >
               <svg viewBox="0 0 32 32" className="h-7 w-7" aria-hidden="true">
@@ -133,12 +136,6 @@ export function AppShell() {
               <LangToggle />
             </div>
             <ThemeToggle />
-            <Link
-              to="/"
-              className="hidden rounded-full px-3 py-2 text-sm font-medium text-ink-muted transition hover:bg-primary-soft hover:text-primary md:inline"
-            >
-              {ta.common.backToSite}
-            </Link>
           </div>
         </div>
       </header>

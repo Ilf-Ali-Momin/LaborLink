@@ -1,7 +1,18 @@
-import { useEffect, useState, type FormEvent } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Info, ShieldCheck } from 'lucide-react'
-import { useAuth } from '../../lib/auth'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom'
+import {
+  ArrowLeft,
+  Building2,
+  GraduationCap,
+  Info,
+  ShieldCheck,
+} from 'lucide-react'
+import { useAuth, type Role } from '../../lib/auth'
 import { useI18n } from '../../lib/i18n'
 import { Logo } from '../../components/ui/Logo'
 import { LangToggle } from '../../components/ui/LangToggle'
@@ -11,11 +22,26 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 type Tab = 'signin' | 'signup'
 
 export function Login() {
-  const { ta } = useI18n()
-  const { mode, session, loading, signInDemo, signInSupabase, signUpSupabase } =
-    useAuth()
+  const { t, ta } = useI18n()
+  const {
+    mode,
+    session,
+    loading,
+    signInDemo,
+    signInSupabase,
+    signUpSupabase,
+    setRole,
+  } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+  const [params] = useSearchParams()
+
+  // Role carried over from a landing page selection ("I am looking for
+  // work" / "I am hiring students"). When present, credentials are ALWAYS
+  // asked for, even with an existing session.
+  const roleParam = params.get('role')
+  const roleIntent: Role | null =
+    roleParam === 'student' || roleParam === 'employer' ? roleParam : null
 
   const [tab, setTab] = useState<Tab>('signin')
   const [name, setName] = useState('')
@@ -24,14 +50,32 @@ export function Login() {
   const [error, setError] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+  const finishing = useRef(false)
 
-  // Already signed in (e.g. a restored Supabase session): straight to the app.
   useEffect(() => {
-    if (!loading && session) {
+    if (loading || !session || finishing.current) return
+    // Explicit role selection: wait for the form to be submitted.
+    if (roleIntent && !submitted) return
+    finishing.current = true
+
+    const finish = async () => {
+      if (roleIntent) {
+        try {
+          await setRole(roleIntent)
+        } catch {
+          /* role stays unset; onboarding will ask again */
+        }
+        navigate('/app', { replace: true })
+        return
+      }
+      // Plain sign in: back to where they came from, or the landing page,
+      // which now shows the account icon in its nav.
       const from = (location.state as { from?: string } | null)?.from
-      navigate(from ?? '/app', { replace: true })
+      navigate(from ?? '/', { replace: true })
     }
-  }, [loading, session, navigate, location.state])
+    void finish()
+  }, [loading, session, submitted, roleIntent, navigate, location.state, setRole])
 
   const isLive = mode === 'supabase'
   const needsName = !isLive || tab === 'signup'
@@ -60,8 +104,7 @@ export function Login() {
 
     if (!isLive) {
       signInDemo(name.trim(), email.trim())
-      const from = (location.state as { from?: string } | null)?.from
-      navigate(from ?? '/app', { replace: true })
+      setSubmitted(true)
       return
     }
 
@@ -70,14 +113,21 @@ export function Login() {
       if (tab === 'signin') {
         const err = await signInSupabase(email.trim(), password)
         if (err) setError(err)
-        // On success the session effect above navigates.
+        else setSubmitted(true)
       } else {
-        const result = await signUpSupabase(name.trim(), email.trim(), password)
+        const result = await signUpSupabase(
+          name.trim(),
+          email.trim(),
+          password,
+          roleIntent,
+        )
         if (result.error) {
           setError(result.error)
         } else if (result.needsConfirmation) {
           setNotice(ta.login.confirmNotice)
           setTab('signin')
+        } else {
+          setSubmitted(true)
         }
       }
     } finally {
@@ -99,26 +149,39 @@ export function Login() {
         <h1 className="mt-8 text-2xl font-bold tracking-tight">{ta.login.title}</h1>
         <p className="mt-2 text-sm text-ink-muted">{ta.login.sub}</p>
 
+        {roleIntent && (
+          <span className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary-soft px-3.5 py-1.5 text-xs font-semibold text-primary">
+            {roleIntent === 'student' ? (
+              <GraduationCap size={14} aria-hidden="true" />
+            ) : (
+              <Building2 size={14} aria-hidden="true" />
+            )}
+            {roleIntent === 'student' ? t.hero.ctaStudent : t.hero.ctaEmployer}
+          </span>
+        )}
+
         {isLive && (
           <div
             role="group"
             aria-label={ta.login.title}
             className="mt-6 flex rounded-full border bg-surface/60 p-0.5"
           >
-            {(['signin', 'signup'] as Tab[]).map((t) => (
+            {(['signin', 'signup'] as Tab[]).map((tabOption) => (
               <button
-                key={t}
+                key={tabOption}
                 type="button"
-                aria-pressed={tab === t}
+                aria-pressed={tab === tabOption}
                 onClick={() => {
-                  setTab(t)
+                  setTab(tabOption)
                   setError(null)
                 }}
                 className={`flex-1 rounded-full px-3 py-1.5 text-sm font-semibold transition ${
-                  tab === t ? 'bg-primary text-white' : 'text-ink-muted hover:text-ink'
+                  tab === tabOption
+                    ? 'bg-primary text-white'
+                    : 'text-ink-muted hover:text-ink'
                 }`}
               >
-                {t === 'signin' ? ta.login.signInTab : ta.login.signUpTab}
+                {tabOption === 'signin' ? ta.login.signInTab : ta.login.signUpTab}
               </button>
             ))}
           </div>

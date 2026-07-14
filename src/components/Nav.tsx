@@ -1,14 +1,26 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import { useI18n } from '../lib/i18n'
+import { useAuth } from '../lib/auth'
 import { Logo } from './ui/Logo'
 import { LangToggle } from './ui/LangToggle'
 import { ThemeToggle } from './ui/ThemeToggle'
 import { ButtonRouterLink } from './ui/Button'
 
-/** Sticky floating glass pill with links, DE/EN + theme toggles and CTAs. */
+function initials(name: string): string {
+  return name
+    .split(' ')
+    .map((word) => word[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase()
+}
+
+/** Sticky floating glass pill with links, toggles and session aware CTAs. */
 export function Nav() {
   const { t } = useI18n()
+  const { session } = useAuth()
   const [open, setOpen] = useState(false)
 
   const linkClasses =
@@ -34,12 +46,26 @@ export function Nav() {
           <div className="hidden items-center gap-2 lg:flex">
             <LangToggle />
             <ThemeToggle />
-            <ButtonRouterLink to="/login" variant="ghost" className="px-4 py-2">
-              {t.nav.signIn}
-            </ButtonRouterLink>
-            <ButtonRouterLink to="/onboarding" className="px-4 py-2">
-              {t.nav.getStarted}
-            </ButtonRouterLink>
+            {session ? (
+              /* Account icon: straight to the profile */
+              <Link
+                to="/app/profile"
+                aria-label={t.nav.account}
+                title={t.nav.account}
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-xs font-bold text-white shadow-card transition hover:bg-primary-deep motion-safe:hover:-translate-y-0.5"
+              >
+                {initials(session.name)}
+              </Link>
+            ) : (
+              <>
+                <ButtonRouterLink to="/login" variant="ghost" className="px-4 py-2">
+                  {t.nav.signIn}
+                </ButtonRouterLink>
+                <ButtonRouterLink to="/onboarding" className="px-4 py-2">
+                  {t.nav.getStarted}
+                </ButtonRouterLink>
+              </>
+            )}
           </div>
 
           <div className="flex items-center gap-1 lg:hidden">
@@ -62,6 +88,32 @@ export function Nav() {
             id="mobile-menu"
             className="glass mt-2 flex flex-col gap-1 rounded-card p-4 shadow-card lg:hidden"
           >
+            {session && (
+              <>
+                <Link
+                  to="/app/profile"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 rounded-btn px-3 py-2.5 transition hover:bg-primary-soft"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-white"
+                  >
+                    {initials(session.name)}
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block truncate font-semibold">
+                      {session.name}
+                    </span>
+                    <span className="block text-xs text-ink-muted">
+                      {t.nav.account}
+                    </span>
+                  </span>
+                </Link>
+                <div className="my-2 border-t" />
+              </>
+            )}
+
             {t.nav.links.map((link) => (
               <a
                 key={link.href}
@@ -76,18 +128,20 @@ export function Nav() {
             <div className="flex items-center justify-between px-3 py-1">
               <LangToggle />
             </div>
-            <div className="mt-2 flex flex-col gap-2">
-              <ButtonRouterLink
-                to="/login"
-                variant="outline"
-                onClick={() => setOpen(false)}
-              >
-                {t.nav.signIn}
-              </ButtonRouterLink>
-              <ButtonRouterLink to="/onboarding" onClick={() => setOpen(false)}>
-                {t.nav.getStarted}
-              </ButtonRouterLink>
-            </div>
+            {!session && (
+              <div className="mt-2 flex flex-col gap-2">
+                <ButtonRouterLink
+                  to="/login"
+                  variant="outline"
+                  onClick={() => setOpen(false)}
+                >
+                  {t.nav.signIn}
+                </ButtonRouterLink>
+                <ButtonRouterLink to="/onboarding" onClick={() => setOpen(false)}>
+                  {t.nav.getStarted}
+                </ButtonRouterLink>
+              </div>
+            )}
           </div>
         )}
       </div>

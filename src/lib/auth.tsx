@@ -36,6 +36,7 @@ interface AuthValue {
     name: string,
     email: string,
     password: string,
+    role?: Role | null,
   ) => Promise<{ error: string | null; needsConfirmation: boolean }>
   setRole: (role: Role) => Promise<void>
   signOut: () => Promise<void>
@@ -160,13 +161,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return error ? error.message : null
     },
 
-    signUpSupabase: async (name, email, password) => {
+    signUpSupabase: async (name, email, password, role) => {
       if (!supabase)
         return { error: 'Supabase is not configured', needsConfirmation: false }
+      // The handle_new_user trigger reads name and role from this metadata.
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { name } },
+        options: { data: { name, ...(role ? { role } : {}) } },
       })
       if (error) return { error: error.message, needsConfirmation: false }
       // With email confirmation enabled there is no session yet.
