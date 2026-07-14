@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Design tokens from DESIGN.md as RGB triplets so Tailwind can apply
+ * alpha (e.g. bg-surface/65). Dark theme swaps the same variables.
+ */
+:root {
+  --c-bg: 247 249 252; /* #F7F9FC */
+  --c-surface: 255 255 255; /* #FFFFFF */
+  --c-primary: 37 99 235; /* #2563EB */
+  --c-primary-deep: 30 64 175; /* #1E40AF */
+  --c-primary-soft: 234 241 255; /* #EAF1FF */
+  --c-ink: 15 23 42; /* #0F172A */
+  --c-ink-muted: 100 116 139; /* #64748B */
+  --c-success: 22 163 74; /* #16A34A */
+  --c-wash: 220 231 255; /* #DCE7FF hero radial wash */
+
+  --shadow-card: 0 8px 30px rgba(37, 99, 235, 0.08);
+  --shadow-card-hover: 0 14px 40px rgba(37, 99, 235, 0.16);
+}
+
+.dark {
+  --c-bg: 9 14 26; /* #090E1A */
+  --c-surface: 17 25 43; /* #11192B */
+  --c-primary: 96 138 252; /* brighter blue for dark contrast */
+  --c-primary-deep: 59 106 235;
+  --c-primary-soft: 27 38 66; /* #1B2642 */
+  --c-ink: 231 237 248; /* #E7EDF8 */
+  --c-ink-muted: 148 163 184; /* #94A3B8 */
+  --c-success: 52 211 123;
+  --c-wash: 22 33 62;
+
+  --shadow-card: 0 8px 30px rgba(2, 6, 18, 0.45);
+  --shadow-card-hover: 0 14px 40px rgba(2, 6, 18, 0.6);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-bg font-sans text-ink antialiased;
+  }
+
+  ::selection {
+    @apply bg-primary/20;
+  }
+
+  /* WCAG: visible 2px primary focus ring on every interactive element */
+  :focus-visible {
+    outline: 2px solid rgb(var(--c-primary));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  /* Glass surface per DESIGN.md: 65% surface + 16px blur + light inner border */
+  .glass {
+    @apply border border-white/60 bg-surface/65 backdrop-blur-2xl dark:border-white/10;
+  }
+
+  .hero-wash {
+    background: radial-gradient(
+      circle at 70% 20%,
+      rgb(var(--c-wash)) 0%,
+      rgb(var(--c-bg)) 55%
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

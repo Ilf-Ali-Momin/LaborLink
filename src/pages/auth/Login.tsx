@@ -1,0 +1,214 @@
+import { useEffect, useState, type FormEvent } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { ArrowLeft, Info, ShieldCheck } from 'lucide-react'
+import { useAuth } from '../../lib/auth'
+import { useI18n } from '../../lib/i18n'
+import { Logo } from '../../components/ui/Logo'
+import { LangToggle } from '../../components/ui/LangToggle'
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+type Tab = 'signin' | 'signup'
+
+export function Login() {
+  const { ta } = useI18n()
+  const { mode, session, loading, signInDemo, signInSupabase, signUpSupabase } =
+    useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const [tab, setTab] = useState<Tab>('signin')
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [notice, setNotice] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
+
+  // Already signed in (e.g. a restored Supabase session): straight to the app.
+  useEffect(() => {
+    if (!loading && session) {
+      const from = (location.state as { from?: string } | null)?.from
+      navigate(from ?? '/app', { replace: true })
+    }
+  }, [loading, session, navigate, location.state])
+
+  const isLive = mode === 'supabase'
+  const needsName = !isLive || tab === 'signup'
+
+  const validate = (): boolean => {
+    if (needsName && !name.trim()) {
+      setError(ta.login.errorName)
+      return false
+    }
+    if (!EMAIL_PATTERN.test(email.trim())) {
+      setError(ta.login.errorEmail)
+      return false
+    }
+    if (isLive && password.length < 8) {
+      setError(ta.login.errorPassword)
+      return false
+    }
+    return true
+  }
+
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    setNotice(null)
+    if (!validate()) return
+
+    if (!isLive) {
+      signInDemo(name.trim(), email.trim())
+      const from = (location.state as { from?: string } | null)?.from
+      navigate(from ?? '/app', { replace: true })
+      return
+    }
+
+    setBusy(true)
+    try {
+      if (tab === 'signin') {
+        const err = await signInSupabase(email.trim(), password)
+        if (err) setError(err)
+        // On success the session effect above navigates.
+      } else {
+        const result = await signUpSupabase(name.trim(), email.trim(), password)
+        if (result.error) {
+          setError(result.error)
+        } else if (result.needsConfirmation) {
+          setNotice(ta.login.confirmNotice)
+          setTab('signin')
+        }
+      }
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const field =
+    'mt-1.5 w-full rounded-btn border bg-surface px-4 py-3 text-sm text-ink placeholder:text-ink-muted/60'
+
+  return (
+    <div className="hero-wash flex min-h-screen flex-col items-center justify-center px-4 py-10">
+      <div className="glass w-full max-w-md rounded-card p-8 shadow-card">
+        <div className="flex items-center justify-between">
+          <Logo />
+          <LangToggle />
+        </div>
+
+        <h1 className="mt-8 text-2xl font-bold tracking-tight">{ta.login.title}</h1>
+        <p className="mt-2 text-sm text-ink-muted">{ta.login.sub}</p>
+
+        {isLive && (
+          <div
+            role="group"
+            aria-label={ta.login.title}
+            className="mt-6 flex rounded-full border bg-surface/60 p-0.5"
+          >
+            {(['signin', 'signup'] as Tab[]).map((t) => (
+              <button
+                key={t}
+                type="button"
+                aria-pressed={tab === t}
+                onClick={() => {
+                  setTab(t)
+                  setError(null)
+                }}
+                className={`flex-1 rounded-full px-3 py-1.5 text-sm font-semibold transition ${
+                  tab === t ? 'bg-primary text-white' : 'text-ink-muted hover:text-ink'
+                }`}
+              >
+                {t === 'signin' ? ta.login.signInTab : ta.login.signUpTab}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <form onSubmit={onSubmit} className="mt-6 space-y-4" noValidate>
+          {needsName && (
+            <div>
+              <label htmlFor="login-name" className="text-sm font-semibold">
+                {ta.login.nameLabel}
+              </label>
+              <input
+                id="login-name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder={ta.login.namePlaceholder}
+                className={field}
+                autoComplete="name"
+              />
+            </div>
+          )}
+          <div>
+            <label htmlFor="login-email" className="text-sm font-semibold">
+              {ta.login.emailLabel}
+            </label>
+            <input
+              id="login-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={ta.login.emailPlaceholder}
+              className={field}
+              autoComplete="email"
+            />
+          </div>
+          {isLive && (
+            <div>
+              <label htmlFor="login-password" className="text-sm font-semibold">
+                {ta.login.passwordLabel}
+              </label>
+              <input
+                id="login-password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder={ta.login.passwordPlaceholder}
+                className={field}
+                autoComplete={tab === 'signin' ? 'current-password' : 'new-password'}
+              />
+            </div>
+          )}
+
+          {error && (
+            <p role="alert" className="text-sm font-medium text-primary">
+              {error}
+            </p>
+          )}
+          {notice && (
+            <p
+              role="status"
+              className="flex items-start gap-2 rounded-btn bg-success/10 p-3 text-sm font-medium text-success"
+            >
+              <ShieldCheck size={16} className="mt-0.5 shrink-0" aria-hidden="true" />
+              {notice}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={busy}
+            className="w-full rounded-btn bg-primary px-5 py-3 text-sm font-semibold text-white shadow-card transition enabled:hover:bg-primary-deep enabled:motion-safe:hover:-translate-y-0.5 disabled:cursor-wait disabled:opacity-60"
+          >
+            {isLive && tab === 'signup' ? ta.login.signUpTab : ta.login.continueBtn}
+          </button>
+        </form>
+
+        <p className="mt-6 flex items-start gap-2 text-xs leading-relaxed text-ink-muted">
+          <Info size={14} className="mt-0.5 shrink-0" aria-hidden="true" />
+          {isLive ? ta.login.liveNote : ta.login.demoNote}
+        </p>
+      </div>
+
+      <Link
+        to="/"
+        className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-ink-muted transition hover:text-primary"
+      >
+        <ArrowLeft size={15} aria-hidden="true" />
+        {ta.common.backToSite}
+      </Link>
+    </div>
+  )
+}
