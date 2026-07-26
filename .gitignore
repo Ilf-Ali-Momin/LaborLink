@@ -1,0 +1,12 @@
+# See .env.example for required variables
+.env
+.env.*
+!.env.example
+
+node_modules/
+.next/
+out/
+.vercel
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
