@@ -17,11 +17,6 @@
   --color-near: #ffb020;
   --color-over: #ff4d3d;
 
-  /* Type */
-  --font-display: var(--font-clash), "Helvetica Neue", sans-serif;
-  --font-body: var(--font-switzer), system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", monospace;
-
   --text-display-xl: 5rem;
   --text-display-xl--line-height: 0.95;
   --text-display-xl--letter-spacing: -0.03em;
@@ -50,11 +45,19 @@
   --ease-signature: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Font tokens reference next/font runtime variables (set on <html>), so
+   they must be inlined into utilities rather than emitted at :root. */
+@theme inline {
+  --font-display: var(--font-clash), "Helvetica Neue", sans-serif;
+  --font-body: var(--font-switzer), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", monospace;
+}
+
 @layer base {
   body {
     background: var(--color-paper);
     color: var(--color-void);
-    font-family: var(--font-body);
+    font-family: var(--font-switzer), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 

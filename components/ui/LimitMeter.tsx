@@ -79,8 +79,8 @@ export function LimitMeter({
           ) : null}
         </div>
         <div
-          className={`font-mono tabular-nums ${mainText} ${
-            scale === "hero" ? "text-display-m font-medium" : "text-sm"
+          className={`shrink-0 whitespace-nowrap font-mono tabular-nums ${mainText} ${
+            scale === "hero" ? "text-3xl font-medium sm:text-4xl" : "text-sm"
           }`}
         >
           {formatNum(value)}

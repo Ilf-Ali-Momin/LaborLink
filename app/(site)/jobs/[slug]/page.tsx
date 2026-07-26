@@ -103,19 +103,27 @@ export default async function JobDetailPage({
 
       <div className="mx-auto grid max-w-7xl gap-14 px-6 py-16 lg:grid-cols-[1fr_400px] lg:px-10">
         <article className="max-w-[70ch]">
-          {listing.description.split("\n\n").map((block, i) =>
-            block.startsWith("- ") ? (
-              <ul key={i} className="mt-4 list-disc space-y-1.5 pl-5 text-body-l">
-                {block.split("\n").map((line, j) => (
-                  <li key={j}>{line.replace(/^- /, "")}</li>
-                ))}
-              </ul>
-            ) : (
-              <p key={i} className="mt-4 text-body-l leading-relaxed first:mt-0">
-                {block}
-              </p>
-            ),
-          )}
+          {listing.description.split("\n\n").map((block, i) => {
+            const lines = block.split("\n");
+            const bullets = lines.filter((l) => l.startsWith("- "));
+            const text = lines.filter((l) => !l.startsWith("- ")).join(" ");
+            return (
+              <div key={i} className="mt-5 first:mt-0">
+                {text ? (
+                  <p className="text-body-l font-medium leading-relaxed">
+                    {text}
+                  </p>
+                ) : null}
+                {bullets.length > 0 ? (
+                  <ul className="mt-2 list-disc space-y-1.5 pl-5 text-body-l">
+                    {bullets.map((line, j) => (
+                      <li key={j}>{line.replace(/^- /, "")}</li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
+            );
+          })}
         </article>
 
         <aside className="space-y-6 lg:sticky lg:top-8 lg:self-start">

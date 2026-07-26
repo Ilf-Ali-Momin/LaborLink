@@ -15,10 +15,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${clash.variable} ${switzer.variable} ${jetbrains.variable} font-body antialiased`}
-      >
+    <html
+      lang="en"
+      className={`${clash.variable} ${switzer.variable} ${jetbrains.variable}`}
+    >
+      <body className="font-body antialiased">
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-signal focus:px-4 focus:py-2 focus:text-void"
