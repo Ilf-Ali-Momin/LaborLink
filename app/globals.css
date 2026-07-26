@@ -12,8 +12,10 @@
   --color-signal: #ff6b2c;
   --color-signal-dk: #c2410c;
 
-  /* Semantic compliance states */
-  --color-under: #00e05c;
+  /* Semantic compliance states. "Under" matches the brand signal —
+     the state text beside the meter carries the meaning, never color
+     alone. */
+  --color-under: #ff6b2c;
   --color-near: #ffb020;
   --color-over: #ff4d3d;
 
