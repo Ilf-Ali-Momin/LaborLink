@@ -1,0 +1,209 @@
+@import "tailwindcss";
+
+@theme {
+  /* Ground */
+  --color-void: #000000;
+  --color-paper: #ffffff;
+  --color-ash: #1c1c1c;
+  --color-smoke: #6b6b6b;
+  --color-hairline: #e4e4e4;
+
+  /* Signal — roughly one green element per viewport */
+  --color-signal: #00e05c;
+  --color-signal-dk: #00a845;
+
+  /* Semantic compliance states */
+  --color-under: #00e05c;
+  --color-near: #ffb020;
+  --color-over: #ff4d3d;
+
+  /* Type */
+  --font-display: var(--font-clash), "Helvetica Neue", sans-serif;
+  --font-body: var(--font-switzer), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", monospace;
+
+  --text-display-xl: 5rem;
+  --text-display-xl--line-height: 0.95;
+  --text-display-xl--letter-spacing: -0.03em;
+  --text-display-xl--font-weight: 700;
+
+  --text-display-l: 3.5rem;
+  --text-display-l--line-height: 0.95;
+  --text-display-l--letter-spacing: -0.03em;
+  --text-display-l--font-weight: 600;
+
+  --text-display-m: 2.25rem;
+  --text-display-m--line-height: 1;
+  --text-display-m--letter-spacing: -0.03em;
+  --text-display-m--font-weight: 600;
+
+  --text-body-l: 1.125rem;
+  --text-body-l--line-height: 1.5;
+
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.4;
+  --text-caption--letter-spacing: 0.12em;
+
+  /* Shape: near-zero radius. Pills (999px) only for filter tags and chips. */
+  --radius-r: 4px;
+
+  --ease-signature: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  body {
+    background: var(--color-paper);
+    color: var(--color-void);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--color-signal);
+    color: var(--color-void);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+
+  /* The light green fails contrast on white; darken the ring there. */
+  [data-ground="paper"] :focus-visible {
+    outline-color: var(--color-signal-dk);
+  }
+}
+
+@layer components {
+  .eyebrow {
+    font-size: var(--text-caption);
+    line-height: var(--text-caption--line-height);
+    letter-spacing: var(--text-caption--letter-spacing);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* Links: green underline grows from the left. */
+  .link-grow {
+    background-image: linear-gradient(var(--color-signal), var(--color-signal));
+    background-size: 0% 2px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    padding-bottom: 2px;
+  }
+  .link-grow:hover,
+  .link-grow:focus-visible {
+    background-size: 100% 2px;
+  }
+
+  /* Cards: raise 2px, top edge picks up a green rule sweeping left to right. */
+  .card-lift {
+    position: relative;
+  }
+  .card-lift::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 0%;
+    background: var(--color-signal);
+    z-index: 1;
+  }
+  .card-lift:hover {
+    transform: translateY(-2px);
+  }
+  .card-lift:hover::before {
+    width: 100%;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Motion. Runs only when the user allows it. Under reduced motion,    */
+/* reveals are instant and the meter jumps to its value. No fallbacks. */
+/* ------------------------------------------------------------------ */
+
+.hero-line-mask {
+  display: block;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .link-grow {
+    transition: background-size 200ms var(--ease-signature);
+  }
+  .card-lift {
+    transition: transform 200ms var(--ease-signature);
+  }
+  .card-lift::before {
+    transition: width 200ms var(--ease-signature);
+  }
+
+  /* Page-load sequence, hero only. ~900ms total, orchestrated. */
+  .hero-line {
+    animation: hero-wipe 600ms var(--ease-signature) both;
+    animation-delay: var(--d, 0ms);
+  }
+  .hero-rise {
+    animation: hero-rise 500ms var(--ease-signature) both;
+    animation-delay: var(--d, 0ms);
+  }
+  .hero-wedge {
+    animation: hero-wedge 500ms var(--ease-signature) both;
+    animation-delay: var(--d, 0ms);
+  }
+
+  /* Scroll reveals: mask, not opacity fade. Fire once, at 20% entry. */
+  .reveal-mask {
+    clip-path: inset(0 100% 0 0);
+  }
+  .reveal-mask.is-revealed {
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 700ms var(--ease-signature);
+  }
+  .reveal-rise {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  .reveal-rise.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 500ms var(--ease-signature),
+      transform 500ms var(--ease-signature);
+  }
+
+  /* The limit meter animates on data change, never on scroll. */
+  .meter-fill {
+    transition: width 400ms var(--ease-signature);
+  }
+}
+
+@keyframes hero-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-wedge {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
