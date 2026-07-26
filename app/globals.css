@@ -8,9 +8,9 @@
   --color-smoke: #6b6b6b;
   --color-hairline: #e4e4e4;
 
-  /* Signal — roughly one green element per viewport */
-  --color-signal: #00e05c;
-  --color-signal-dk: #00a845;
+  /* Signal — roughly one accent element per viewport */
+  --color-signal: #7c5cff;
+  --color-signal-dk: #5b3be8;
 
   /* Semantic compliance states */
   --color-under: #00e05c;
@@ -71,7 +71,7 @@
     outline-offset: 2px;
   }
 
-  /* The light green fails contrast on white; darken the ring there. */
+  /* The light accent fails contrast on white; darken the ring there. */
   [data-ground="paper"] :focus-visible {
     outline-color: var(--color-signal-dk);
   }
@@ -86,7 +86,7 @@
     font-weight: 500;
   }
 
-  /* Links: green underline grows from the left. */
+  /* Links: signal underline grows from the left. */
   .link-grow {
     background-image: linear-gradient(var(--color-signal), var(--color-signal));
     background-size: 0% 2px;
@@ -99,7 +99,7 @@
     background-size: 100% 2px;
   }
 
-  /* Cards: raise 2px, top edge picks up a green rule sweeping left to right. */
+  /* Cards: raise 2px, top edge picks up a 2px signal rule sweeping left to right. */
   .card-lift {
     position: relative;
   }
