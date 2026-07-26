@@ -77,3 +77,28 @@ export async function applyToListing(formData: FormData) {
   revalidatePath("/dashboard/applications");
   redirect(`/jobs/${slug}?applied=1`);
 }
+
+export async function withdrawApplication(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const id = String(formData.get("id") ?? "");
+  if (!id) redirect("/dashboard/applications");
+
+  // RLS only allows the owning student to set status = withdrawn.
+  const { error } = await supabase
+    .from("applications")
+    .update({ status: "withdrawn" })
+    .eq("id", id)
+    .eq("student_id", user.id);
+
+  if (error) {
+    console.error("withdrawApplication failed", { code: error.code });
+  }
+
+  revalidatePath("/dashboard/applications");
+  redirect("/dashboard/applications");
+}
