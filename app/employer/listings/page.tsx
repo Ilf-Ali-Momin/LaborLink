@@ -41,7 +41,7 @@ export default async function ListingsPage({
         <h1 className="font-display text-display-m">Listings.</h1>
         <Link
           href="/employer/listings/new"
-          className="rounded-r bg-signal px-5 py-2.5 font-medium text-void transition-colors duration-200 hover:bg-void hover:text-signal"
+          className="rounded-r border border-void bg-signal px-5 py-2.5 font-medium text-void transition-colors duration-200 hover:bg-void hover:text-signal"
         >
           New listing
         </Link>

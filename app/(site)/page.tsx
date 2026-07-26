@@ -269,7 +269,7 @@ function RuleFigure({
 }) {
   return (
     <div>
-      <p className="border-b-2 border-signal pb-3 font-mono text-display-m font-medium tabular-nums">
+      <p className="border-b-2 border-signal-dk pb-3 font-mono text-display-m font-medium tabular-nums">
         {figure}
       </p>
       <h3 className="mt-4 font-display text-xl font-semibold">{title}</h3>

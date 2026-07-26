@@ -282,5 +282,18 @@ console.log("\nAs ANONYMOUS:");
   check("cannot read hour entries", !!hoursError || (hours ?? []).length === 0);
 }
 
+// Cleanup: remove everything this run created, so test rows never linger
+// on the local jobs board. Deleting the employers cascades listings and
+// applications; deleting the users cascades profiles and hour entries.
+for (const org of [orgA, orgB]) {
+  if (org) {
+    const { error } = await admin.from("employers").delete().eq("id", org);
+    if (error) console.error(`cleanup: could not delete employer ${org}: ${error.message}`);
+  }
+}
+for (const user of [studentA, studentB, employerA, employerB]) {
+  await admin.auth.admin.deleteUser(user.id);
+}
+
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed > 0 ? 1 : 0);

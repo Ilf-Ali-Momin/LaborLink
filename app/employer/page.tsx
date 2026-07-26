@@ -81,7 +81,7 @@ export default async function EmployerOverview({
           </div>
           <button
             type="submit"
-            className="rounded-r bg-signal px-6 py-3 font-medium text-void transition-colors duration-200 hover:bg-void hover:text-signal"
+            className="rounded-r border border-void bg-signal px-6 py-3 font-medium text-void transition-colors duration-200 hover:bg-void hover:text-signal"
           >
             Create company
           </button>

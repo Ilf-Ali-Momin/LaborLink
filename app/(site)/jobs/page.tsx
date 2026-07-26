@@ -105,7 +105,7 @@ export default async function JobsPage({
           {remoteOnly ? <input type="hidden" name="remote" value="1" /> : null}
           <button
             type="submit"
-            className="rounded-r bg-signal px-6 py-2.5 font-medium text-void transition-colors duration-200 hover:bg-void hover:text-signal"
+            className="rounded-r border border-void bg-signal px-6 py-2.5 font-medium text-void transition-colors duration-200 hover:bg-void hover:text-signal"
           >
             Search
           </button>

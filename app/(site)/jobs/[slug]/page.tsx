@@ -257,7 +257,7 @@ export default async function JobDetailPage({
                 </label>
                 <button
                   type="submit"
-                  className="w-full rounded-r bg-signal px-6 py-3 font-medium text-void transition-colors duration-200 hover:bg-void hover:text-signal"
+                  className="w-full rounded-r border border-void bg-signal px-6 py-3 font-medium text-void transition-colors duration-200 hover:bg-void hover:text-signal"
                 >
                   Send application
                 </button>

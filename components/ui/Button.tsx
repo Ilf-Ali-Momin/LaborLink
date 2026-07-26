@@ -7,7 +7,7 @@ type Size = "md" | "lg";
 // Buttons invert on hover rather than dim (DESIGN.md).
 const variantClasses: Record<Variant, string> = {
   signal:
-    "bg-signal text-void border border-signal hover:bg-void hover:text-signal",
+    "bg-signal text-void border border-void hover:bg-void hover:text-signal",
   "outline-void":
     "bg-transparent text-paper border border-paper hover:bg-paper hover:text-void",
   "outline-paper":

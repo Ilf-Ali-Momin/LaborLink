@@ -25,3 +25,6 @@
 [2026-07-26T19:38:41.261Z] [INFO] Worker optimize deferred: Memory too low: 1.6% free
 [2026-07-26T19:40:41.254Z] [INFO] Worker consolidate deferred: CPU load too high: 34.53
 [2026-07-26T19:46:41.262Z] [INFO] Worker audit deferred: CPU load too high: 9.80
+[2026-07-26T19:49:41.253Z] [INFO] Worker map deferred: Memory too low: 0.6% free
+[2026-07-26T19:52:41.247Z] [INFO] Worker testgaps deferred: Memory too low: 1.1% free
+[2026-07-26T19:53:41.256Z] [INFO] Worker optimize deferred: CPU load too high: 11.55

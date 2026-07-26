@@ -88,7 +88,10 @@ export default function PricingPage() {
               <ul className={`mt-6 flex-1 space-y-3 border-t pt-6 ${tier.highlighted ? "border-ash" : "border-hairline"}`}>
                 {tier.features.map((f) => (
                   <li key={f} className="flex gap-3">
-                    <span aria-hidden className="mt-2 size-1.5 shrink-0 bg-signal" />
+                    <span
+                      aria-hidden
+                      className={`mt-2 size-1.5 shrink-0 ${tier.highlighted ? "bg-signal" : "bg-signal-dk"}`}
+                    />
                     {f}
                   </li>
                 ))}

@@ -9,8 +9,8 @@
   --color-hairline: #e4e4e4;
 
   /* Signal — roughly one accent element per viewport */
-  --color-signal: #7c5cff;
-  --color-signal-dk: #5b3be8;
+  --color-signal: #ede6d8;
+  --color-signal-dk: #7a6549;
 
   /* Semantic compliance states */
   --color-under: #00e05c;
@@ -71,9 +71,14 @@
     outline-offset: 2px;
   }
 
-  /* The light accent fails contrast on white; darken the ring there. */
+  /* The light accent fails contrast on white; darken it there. */
   [data-ground="paper"] :focus-visible {
     outline-color: var(--color-signal-dk);
+  }
+
+  [data-ground="paper"] ::selection {
+    background: var(--color-void);
+    color: var(--color-signal);
   }
 }
 
@@ -98,6 +103,12 @@
   .link-grow:focus-visible {
     background-size: 100% 2px;
   }
+  [data-ground="paper"] .link-grow {
+    background-image: linear-gradient(
+      var(--color-signal-dk),
+      var(--color-signal-dk)
+    );
+  }
 
   /* Cards: raise 2px, top edge picks up a 2px signal rule sweeping left to right. */
   .card-lift {
@@ -118,6 +129,9 @@
   }
   .card-lift:hover::before {
     width: 100%;
+  }
+  [data-ground="paper"] .card-lift::before {
+    background: var(--color-signal-dk);
   }
 }
 
