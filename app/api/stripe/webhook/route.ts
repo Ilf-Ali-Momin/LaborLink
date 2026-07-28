@@ -39,6 +39,26 @@ export async function POST(req: Request) {
 
   try {
     switch (event.type) {
+      // Primary path. Checkout sets subscription_data.metadata.employer_id,
+      // so these events carry everything needed — no extra API call, and
+      // delivery order relative to checkout.session.completed is irrelevant.
+      case "customer.subscription.created":
+      case "customer.subscription.updated":
+      case "customer.subscription.deleted": {
+        const subscription = event.data.object;
+        const employerId = subscription.metadata?.employer_id;
+        if (!employerId) break;
+        const customerId =
+          typeof subscription.customer === "string"
+            ? subscription.customer
+            : subscription.customer.id;
+        await upsertFromSubscription(employerId, customerId, subscription);
+        break;
+      }
+
+      // Fallback only, for a subscription whose metadata went missing.
+      // Failures here are logged and acknowledged rather than retried: the
+      // subscription events above are authoritative and always sent.
       case "checkout.session.completed": {
         const session = event.data.object;
         const employerId =
@@ -55,22 +75,17 @@ export async function POST(req: Request) {
             : session.customer?.id;
         if (!subscriptionId || !customerId) break;
 
-        const subscription =
-          await getStripe().subscriptions.retrieve(subscriptionId);
-        await upsertFromSubscription(employerId, customerId, subscription);
-        break;
-      }
-
-      case "customer.subscription.updated":
-      case "customer.subscription.deleted": {
-        const subscription = event.data.object;
-        const employerId = subscription.metadata?.employer_id;
-        if (!employerId) break;
-        const customerId =
-          typeof subscription.customer === "string"
-            ? subscription.customer
-            : subscription.customer.id;
-        await upsertFromSubscription(employerId, customerId, subscription);
+        try {
+          const subscription =
+            await getStripe().subscriptions.retrieve(subscriptionId);
+          await upsertFromSubscription(employerId, customerId, subscription);
+        } catch (error) {
+          console.error("checkout.session.completed fallback failed", {
+            id: event.id,
+            message:
+              error instanceof Error ? error.message.slice(0, 200) : "unknown",
+          });
+        }
         break;
       }
 
