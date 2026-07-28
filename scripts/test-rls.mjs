@@ -198,6 +198,21 @@ console.log("\nAs ANOTHER EMPLOYER (employerB):");
     .eq("employer_id", orgA);
   check("cannot enumerate orgA's members", (members ?? []).length === 0);
 
+  // The company profile is publicly readable but owner-only writable.
+  const { data: hijacked } = await employerB.client
+    .from("employers")
+    .update({ name: "Hijacked GmbH", description: "defaced" })
+    .eq("id", orgA)
+    .select("id");
+  check("cannot edit orgA's company profile", (hijacked ?? []).length === 0);
+
+  const { data: stillOk } = await anon
+    .from("employers")
+    .select("name")
+    .eq("id", orgA)
+    .maybeSingle();
+  check("orgA's name is unchanged after the attempt", stillOk?.name === "Org A");
+
   const { error: memberError } = await employerB.client
     .from("employer_members")
     .insert({ employer_id: orgA, user_id: employerB.id, member_role: "owner" });

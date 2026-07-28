@@ -118,12 +118,17 @@ export default async function EmployerOverview({
     <div>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <h1 className="font-display text-display-m">{employer.name}.</h1>
-        <Link
-          href={`/companies/${employer.slug}`}
-          className="link-grow text-sm text-smoke"
-        >
-          View public page
-        </Link>
+        <div className="flex items-center gap-5 text-sm">
+          <Link href="/employer/profile" className="link-grow text-void">
+            Edit company profile
+          </Link>
+          <Link
+            href={`/companies/${employer.slug}`}
+            className="link-grow text-smoke"
+          >
+            View public page
+          </Link>
+        </div>
       </div>
 
       <div className="mt-8 grid gap-6 sm:grid-cols-3">

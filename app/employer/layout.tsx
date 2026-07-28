@@ -19,6 +19,7 @@ export default async function EmployerLayout({
     { href: "/employer/listings", label: "Listings" },
     { href: "/employer/applicants", label: "Applicants" },
     { href: "/employer/billing", label: "Billing" },
+    { href: "/employer/profile", label: "Company" },
   ];
 
   return (
