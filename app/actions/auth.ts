@@ -59,15 +59,13 @@ export async function signIn(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
+    // One identical response for every failure: wrong password, no such
+    // account, or unconfirmed email. Distinguishing "unconfirmed" would
+    // confirm to an attacker that the password they just guessed is
+    // correct — a credential oracle worth more to them than access, since
+    // people reuse passwords. The generic message carries a confirmation
+    // hint for everyone, so a legitimate user still knows what to do.
     const suffix = next ? `&next=${encodeURIComponent(next)}` : "";
-    // An unconfirmed account is only revealed once the correct password has
-    // already been supplied, so this leaks nothing to someone guessing —
-    // and without it, a legitimate user is told their password is wrong
-    // with no way forward.
-    if (error.code === "email_not_confirmed") {
-      redirect(`/login?error=unconfirmed${suffix}`);
-    }
-    // Otherwise identical response whether the account exists or not.
     redirect(`/login?error=1${suffix}`);
   }
 

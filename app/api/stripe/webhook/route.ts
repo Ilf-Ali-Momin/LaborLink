@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { getStripe } from "@/lib/stripe";
+import { getStripe, stripeErrorInfo } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { tierForPrice } from "@/lib/billing";
 
@@ -82,8 +82,7 @@ export async function POST(req: Request) {
         } catch (error) {
           console.error("checkout.session.completed fallback failed", {
             id: event.id,
-            message:
-              error instanceof Error ? error.message.slice(0, 200) : "unknown",
+            ...stripeErrorInfo(error),
           });
         }
         break;
@@ -95,9 +94,9 @@ export async function POST(req: Request) {
     }
   } catch (error) {
     console.error("stripe webhook handler failed", {
-      type: event.type,
+      event: event.type,
       id: event.id,
-      message: error instanceof Error ? error.message.slice(0, 200) : "unknown",
+      ...stripeErrorInfo(error),
     });
     // 500 → Stripe redelivers; handlers are idempotent so that is safe.
     return Response.json({ error: "handler failed" }, { status: 500 });

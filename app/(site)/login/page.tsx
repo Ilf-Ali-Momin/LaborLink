@@ -24,14 +24,12 @@ export default async function LoginPage({
       <div className="mx-auto max-w-md px-6 py-20 lg:px-0">
         <h1 className="font-display text-display-l">Log in.</h1>
 
-        {params.error === "unconfirmed" ? (
-          <p className="mt-6 border-l-2 border-near pl-4 text-sm">
-            Your password is correct, but this email is not confirmed yet.
-            Open the confirmation link we sent you, then log in again.
-          </p>
-        ) : params.error ? (
+        {params.error ? (
           <p className="mt-6 border-l-2 border-over pl-4 text-sm">
-            Email or password is wrong. Check both and try again.
+            We could not log you in. Check your email and password.
+            <br />
+            If you created this account recently, open the confirmation link
+            in your email first.
           </p>
         ) : null}
 

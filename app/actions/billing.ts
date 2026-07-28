@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { requireEmployer, getMyEmployer } from "@/lib/employer";
-import { getStripe } from "@/lib/stripe";
+import { getStripe, stripeErrorInfo } from "@/lib/stripe";
 import { priceForTier, type PaidTier } from "@/lib/billing";
 
 function siteUrl(): string {
@@ -59,9 +59,7 @@ export async function startCheckout(formData: FormData) {
     });
     checkoutUrl = session.url;
   } catch (error) {
-    console.error("startCheckout failed", {
-      message: error instanceof Error ? error.message.slice(0, 200) : "unknown",
-    });
+    console.error("startCheckout failed", stripeErrorInfo(error));
     redirect("/employer/billing?error=stripe");
   }
 
@@ -97,9 +95,7 @@ export async function openBillingPortal() {
     });
     portalUrl = portal.url;
   } catch (error) {
-    console.error("openBillingPortal failed", {
-      message: error instanceof Error ? error.message.slice(0, 200) : "unknown",
-    });
+    console.error("openBillingPortal failed", stripeErrorInfo(error));
     redirect("/employer/billing?error=stripe");
   }
 
