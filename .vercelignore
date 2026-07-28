@@ -1,0 +1,20 @@
+# Vercel builds from source — never upload local build output or deps.
+.next
+node_modules
+out
+
+# Local tooling and state that must not reach the build.
+.claude-flow
+.claude
+.agents
+supabase/.branches
+supabase/.temp
+scripts
+
+# Local env files (Vercel injects its own environment variables).
+.env
+.env.*
+!.env.example
+
+*.tsbuildinfo
+.DS_Store
