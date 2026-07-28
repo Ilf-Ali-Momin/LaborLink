@@ -199,30 +199,62 @@ export type Database = {
       }
       hour_entries: {
         Row: {
+          confirmed_at: string | null
+          confirmed_by: string | null
           created_at: string
+          employer_note: string | null
           hours: number
           id: string
+          listing_id: string | null
           note: string | null
+          status: Database["public"]["Enums"]["hour_entry_status"]
           student_id: string
+          submitted_hours: number | null
           worked_on: string
         }
         Insert: {
+          confirmed_at?: string | null
+          confirmed_by?: string | null
           created_at?: string
+          employer_note?: string | null
           hours: number
           id?: string
+          listing_id?: string | null
           note?: string | null
+          status?: Database["public"]["Enums"]["hour_entry_status"]
           student_id: string
+          submitted_hours?: number | null
           worked_on: string
         }
         Update: {
+          confirmed_at?: string | null
+          confirmed_by?: string | null
           created_at?: string
+          employer_note?: string | null
           hours?: number
           id?: string
+          listing_id?: string | null
           note?: string | null
+          status?: Database["public"]["Enums"]["hour_entry_status"]
           student_id?: string
+          submitted_hours?: number | null
           worked_on?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "hour_entries_confirmed_by_fkey"
+            columns: ["confirmed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hour_entries_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "hour_entries_student_id_fkey"
             columns: ["student_id"]
@@ -413,6 +445,7 @@ export type Database = {
         | "hired"
         | "rejected"
         | "withdrawn"
+      hour_entry_status: "self_reported" | "confirmed" | "corrected"
       listing_status: "draft" | "active" | "closed"
       listing_type: "werkstudent" | "minijob" | "kurzfristig"
       user_role: "student" | "employer"
@@ -560,6 +593,7 @@ export const Constants = {
         "rejected",
         "withdrawn",
       ],
+      hour_entry_status: ["self_reported", "confirmed", "corrected"],
       listing_status: ["draft", "active", "closed"],
       listing_type: ["werkstudent", "minijob", "kurzfristig"],
       user_role: ["student", "employer"],

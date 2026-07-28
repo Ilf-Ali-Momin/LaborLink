@@ -270,6 +270,110 @@ console.log("\nAs the APPLICANT (studentA):");
   check("can withdraw own application", !error && (withdrawn ?? []).length === 1, error?.message);
 }
 
+console.log("\nHOURS: employer confirmation boundary");
+{
+  // studentA logged an hour entry with no listing (an outside employer).
+  const { data: outside } = await studentA.client
+    .from("hour_entries")
+    .select("id, status, submitted_hours")
+    .eq("student_id", studentA.id);
+  check(
+    "student's own entry starts as self_reported",
+    outside?.[0]?.status === "self_reported",
+  );
+  check(
+    "submitted_hours is captured on insert",
+    Number(outside?.[0]?.submitted_hours) === 6,
+  );
+
+  // A student must not be able to confirm their own hours.
+  const { data: selfConfirm } = await studentA.client
+    .from("hour_entries")
+    .update({ status: "confirmed", hours: 99 })
+    .eq("id", outside[0].id)
+    .select("status, hours");
+  check(
+    "student cannot self-confirm",
+    !selfConfirm?.[0] || selfConfirm[0].status === "self_reported",
+  );
+
+  // Hours for an outside employer (listing_id null) are invisible to any
+  // employer — nobody employs the student for them.
+  const { data: seen } = await employerA.client
+    .from("hour_entries")
+    .select("id")
+    .eq("student_id", studentA.id);
+  check("employer cannot see hours with no listing", (seen ?? []).length === 0);
+
+  // Now hire studentA for orgA's listing, then log hours against it.
+  await employerA.client
+    .from("applications")
+    .update({ status: "hired" })
+    .eq("id", applicationA);
+
+  const { error: logErr } = await studentA.client.from("hour_entries").insert({
+    student_id: studentA.id,
+    worked_on: "2026-07-21",
+    hours: 5,
+    listing_id: listingA,
+  });
+  check("student can log hours against a job they were hired for", !logErr, logErr?.message);
+
+  const { data: employerView } = await employerA.client
+    .from("hour_entries")
+    .select("id, submitted_hours")
+    .eq("listing_id", listingA);
+  check(
+    "hiring employer sees those hours",
+    (employerView ?? []).length === 1,
+  );
+
+  const { data: otherView } = await employerB.client
+    .from("hour_entries")
+    .select("id")
+    .eq("listing_id", listingA);
+  check("a different employer cannot see them", (otherView ?? []).length === 0);
+
+  // Employer corrects the figure; the student's original must survive.
+  const entryId = employerView[0].id;
+  const { error: corrErr } = await employerA.client
+    .from("hour_entries")
+    .update({ hours: 3, employer_note: "left early" })
+    .eq("id", entryId);
+  check("hiring employer can correct hours", !corrErr, corrErr?.message);
+
+  const { data: after } = await employerA.client
+    .from("hour_entries")
+    .select("hours, submitted_hours, status, confirmed_by")
+    .eq("id", entryId)
+    .maybeSingle();
+  check("correction is marked as corrected", after?.status === "corrected");
+  check("student's original figure is preserved", Number(after?.submitted_hours) === 5);
+  check("correction records who made it", after?.confirmed_by === employerA.id);
+
+  // Once confirmed, the student can no longer edit or delete it.
+  const { data: studentEdit } = await studentA.client
+    .from("hour_entries")
+    .update({ hours: 12 })
+    .eq("id", entryId)
+    .select("id");
+  check("student cannot edit a corrected entry", (studentEdit ?? []).length === 0);
+
+  const { data: studentDel } = await studentA.client
+    .from("hour_entries")
+    .delete()
+    .eq("id", entryId)
+    .select("id");
+  check("student cannot delete a corrected entry", (studentDel ?? []).length === 0);
+
+  const { data: otherEdit } = await employerB.client
+    .from("hour_entries")
+    .update({ hours: 1 })
+    .eq("id", entryId)
+    .select("id");
+  check("a different employer cannot alter them", (otherEdit ?? []).length === 0);
+}
+
 console.log("\nAs ANONYMOUS:");
 {
   const { data: listings, error } = await anon

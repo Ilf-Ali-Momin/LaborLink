@@ -3,53 +3,53 @@
   "startedAt": "2026-07-28T10:19:24.616Z",
   "workers": {
     "map": {
-      "runCount": 16,
-      "successCount": 16,
-      "failureCount": 0,
-      "averageDurationMs": 4.625,
-      "lastRun": "2026-07-28T14:37:58.579Z",
-      "lastStartedAt": "2026-07-28T14:37:58.573Z",
-      "nextRun": "2026-07-28T14:42:58.439Z",
-      "isRunning": false
-    },
-    "audit": {
       "runCount": 22,
       "successCount": 22,
       "failureCount": 0,
-      "averageDurationMs": 5.363636363636363,
-      "lastRun": "2026-07-28T14:37:58.579Z",
-      "lastStartedAt": "2026-07-28T14:37:58.573Z",
-      "nextRun": "2026-07-28T14:47:58.468Z",
+      "averageDurationMs": 4.090909090909092,
+      "lastRun": "2026-07-28T16:10:54.735Z",
+      "lastStartedAt": "2026-07-28T16:10:54.732Z",
+      "nextRun": "2026-07-28T16:12:58.381Z",
+      "isRunning": false
+    },
+    "audit": {
+      "runCount": 31,
+      "successCount": 31,
+      "failureCount": 0,
+      "averageDurationMs": 4.709677419354839,
+      "lastRun": "2026-07-28T16:10:54.736Z",
+      "lastStartedAt": "2026-07-28T16:10:54.733Z",
+      "nextRun": "2026-07-28T16:17:58.450Z",
       "isRunning": false
     },
     "optimize": {
-      "runCount": 16,
-      "successCount": 16,
+      "runCount": 22,
+      "successCount": 22,
       "failureCount": 0,
-      "averageDurationMs": 4.75,
-      "lastRun": "2026-07-28T14:37:58.579Z",
-      "lastStartedAt": "2026-07-28T14:37:58.574Z",
-      "nextRun": "2026-07-28T14:42:58.439Z",
+      "averageDurationMs": 4.2272727272727275,
+      "lastRun": "2026-07-28T16:10:54.736Z",
+      "lastStartedAt": "2026-07-28T16:10:54.732Z",
+      "nextRun": "2026-07-28T16:12:58.382Z",
       "isRunning": false
     },
     "consolidate": {
-      "runCount": 8,
-      "successCount": 8,
-      "failureCount": 0,
-      "averageDurationMs": 11,
-      "lastRun": "2026-07-28T14:37:58.578Z",
-      "lastStartedAt": "2026-07-28T14:37:58.571Z",
-      "nextRun": "2026-07-28T14:40:54.748Z",
-      "isRunning": false
-    },
-    "testgaps": {
       "runCount": 12,
       "successCount": 12,
       "failureCount": 0,
-      "averageDurationMs": 8.166666666666666,
-      "lastRun": "2026-07-28T14:37:58.580Z",
-      "lastStartedAt": "2026-07-28T14:37:58.574Z",
-      "nextRun": "2026-07-28T14:53:33.873Z",
+      "averageDurationMs": 9.833333333333334,
+      "lastRun": "2026-07-28T16:10:54.734Z",
+      "lastStartedAt": "2026-07-28T16:10:54.729Z",
+      "nextRun": "2026-07-28T16:40:54.709Z",
+      "isRunning": false
+    },
+    "testgaps": {
+      "runCount": 16,
+      "successCount": 16,
+      "failureCount": 0,
+      "averageDurationMs": 6.9375,
+      "lastRun": "2026-07-28T16:10:54.735Z",
+      "lastStartedAt": "2026-07-28T16:10:54.731Z",
+      "nextRun": "2026-07-28T16:13:33.814Z",
       "isRunning": false
     },
     "backup": {
@@ -175,5 +175,5 @@
       }
     ]
   },
-  "savedAt": "2026-07-28T14:37:58.580Z"
+  "savedAt": "2026-07-28T16:10:54.736Z"
 }
