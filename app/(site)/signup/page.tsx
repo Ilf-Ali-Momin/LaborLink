@@ -11,7 +11,12 @@ export const metadata: Metadata = {
 export default async function SignupPage({
   searchParams,
 }: {
-  searchParams: Promise<{ role?: string; error?: string; next?: string }>;
+  searchParams: Promise<{
+    role?: string;
+    error?: string;
+    next?: string;
+    check_email?: string;
+  }>;
 }) {
   const params = await searchParams;
   const session = await getSessionProfile();
@@ -82,6 +87,19 @@ export default async function SignupPage({
                 ? "Free, and it stays free."
                 : "Your first active listing is free."}
             </p>
+
+            {params.check_email ? (
+              <div className="mt-6 border-l-2 border-signal pl-4">
+                <p className="font-medium">Account created. Confirm your email.</p>
+                <p className="mt-1 text-sm text-paper/70">
+                  We sent a link to your email address. Open it, then{" "}
+                  <Link href="/login" className="link-grow text-paper">
+                    log in
+                  </Link>
+                  . You cannot log in before confirming.
+                </p>
+              </div>
+            ) : null}
 
             {params.error === "invalid" ? (
               <p className="mt-6 border-l-2 border-over pl-4 text-sm">

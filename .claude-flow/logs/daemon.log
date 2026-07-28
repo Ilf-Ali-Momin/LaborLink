@@ -306,3 +306,10 @@
 [2026-07-28T12:07:24.551Z] [INFO] Worker testgaps deferred: CPU load too high: 13.87
 [2026-07-28T12:08:24.560Z] [INFO] Worker optimize deferred: CPU load too high: 8.57
 [2026-07-28T12:11:24.569Z] [INFO] Worker audit deferred: CPU load too high: 11.85
+[2026-07-28T12:19:24.561Z] [INFO] Worker map deferred: CPU load too high: 19.77
+[2026-07-28T12:21:24.856Z] [INFO] Worker audit deferred: CPU load too high: 14.08
+[2026-07-28T12:23:24.562Z] [INFO] Worker optimize deferred: CPU load too high: 14.82
+[2026-07-28T12:25:24.532Z] [INFO] Worker consolidate deferred: CPU load too high: 36.09
+[2026-07-28T12:27:24.556Z] [INFO] Worker testgaps deferred: CPU load too high: 22.34
+[2026-07-28T12:31:24.971Z] [INFO] Worker audit deferred: CPU load too high: 15.25
+[2026-07-28T12:34:24.564Z] [INFO] Worker map deferred: CPU load too high: 16.56
