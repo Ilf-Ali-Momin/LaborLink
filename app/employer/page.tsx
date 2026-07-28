@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { createEmployer } from "@/app/actions/employers";
 import { getMyEmployer } from "@/lib/employer";
-import { activeListingLimit } from "@/lib/entitlements";
+import { activeListingLimit, effectiveTier } from "@/lib/entitlements";
 import { StatusChip } from "@/components/ui/StatusChip";
 
 const inputClass =
@@ -110,7 +110,7 @@ export default async function EmployerOverview({
         .limit(5),
     ]);
 
-  const tier = sub?.status === "active" ? sub.tier : "free";
+  const tier = effectiveTier(sub);
   const limit = activeListingLimit(tier);
   const activeCount = (listings ?? []).filter((l) => l.status === "active").length;
 
@@ -140,8 +140,8 @@ export default async function EmployerOverview({
             {tier === "free" ? (
               <>
                 Free tier.{" "}
-                <Link href="/pricing" className="link-grow text-void">
-                  More listings
+                <Link href="/employer/billing" className="link-grow text-void">
+                  Upgrade
                 </Link>
               </>
             ) : (

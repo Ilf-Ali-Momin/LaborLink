@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireEmployer, getMyEmployer } from "@/lib/employer";
 import { slugify, randomSuffix } from "@/lib/slug";
-import { activeListingLimit } from "@/lib/entitlements";
+import { activeListingLimit, effectiveTier } from "@/lib/entitlements";
 import {
   MINIMUM_WAGE,
   MINIJOB_MONTHLY_CEILING,
@@ -139,8 +139,7 @@ export async function setListingStatus(formData: FormData) {
       .select("tier, status")
       .eq("employer_id", employer.id)
       .maybeSingle();
-    const tier = sub?.status === "active" ? sub.tier : "free";
-    const limit = activeListingLimit(tier);
+    const limit = activeListingLimit(effectiveTier(sub));
 
     const { count } = await supabase
       .from("listings")
