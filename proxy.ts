@@ -3,14 +3,19 @@ import { NextResponse, type NextRequest } from "next/server";
 
 /**
  * Refreshes the auth session cookie and redirects signed-out visitors away
- * from app areas. Middleware is a convenience, not a security boundary —
- * every page and server action re-checks auth itself (SECURITY.md).
+ * from app areas. This is a convenience, not a security boundary — every
+ * page and server action re-checks auth itself (SECURITY.md).
  *
- * The session logic is inlined rather than imported from lib/: Vercel
- * bundles middleware separately and cannot resolve the "@/" path alias in
- * that bundle.
+ * Next.js 16 replaced the `middleware` convention with `proxy`, which runs
+ * on the Node.js runtime. That matters here: the Supabase SSR client pulls
+ * in code referencing __dirname, which does not exist on Edge and 500s
+ * every request.
+ *
+ * The session logic is inlined rather than imported from lib/ because
+ * Vercel bundles this file separately and cannot resolve the "@/" alias
+ * inside that bundle.
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
