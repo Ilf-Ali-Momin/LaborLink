@@ -16,6 +16,26 @@ import { NextResponse, type NextRequest } from "next/server";
  * inside that bundle.
  */
 export async function proxy(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+  const needsAuth =
+    path.startsWith("/dashboard") || path.startsWith("/employer");
+
+  // Fast path for visitors with no session at all. Supabase stores its
+  // session in cookies prefixed "sb-", so their absence is proof there is
+  // nothing to validate — and validating costs a network round-trip to
+  // Frankfurt on every single page view.
+  const hasSessionCookie = request.cookies
+    .getAll()
+    .some((c) => c.name.startsWith("sb-"));
+
+  if (!hasSessionCookie) {
+    if (!needsAuth) return NextResponse.next({ request });
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("next", path);
+    return NextResponse.redirect(url);
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -44,10 +64,6 @@ export async function proxy(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  const path = request.nextUrl.pathname;
-  const needsAuth =
-    path.startsWith("/dashboard") || path.startsWith("/employer");
 
   if (needsAuth && !user) {
     const url = request.nextUrl.clone();

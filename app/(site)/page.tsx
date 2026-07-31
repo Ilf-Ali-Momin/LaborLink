@@ -43,19 +43,19 @@ export default async function HomePage() {
           </p>
           <h1 className="mt-6 font-display text-[3.4rem] font-bold leading-[0.95] tracking-[-0.03em] sm:text-display-xl">
             <span className="hero-line-mask">
-              <span className="hero-line block" style={{ "--d": "80ms" } as React.CSSProperties}>
+              <span className="hero-line block" style={{ "--d": "60ms" } as React.CSSProperties}>
                 Find work.
               </span>
             </span>
             <span className="hero-line-mask">
-              <span className="hero-line block" style={{ "--d": "140ms" } as React.CSSProperties}>
+              <span className="hero-line block" style={{ "--d": "120ms" } as React.CSSProperties}>
                 Stay legal.
               </span>
             </span>
           </h1>
           <p
             className="hero-rise mt-8 max-w-[60ch] text-body-l text-paper/80"
-            style={{ "--d": "500ms" } as React.CSSProperties}
+            style={{ "--d": "200ms" } as React.CSSProperties}
           >
             A Werkstudent contract stops at {WERKSTUDENT_WEEKLY_HOURS.value}{" "}
             hours a week. A Minijob stops at €{MINIJOB_MONTHLY_CEILING.value} a
@@ -65,7 +65,7 @@ export default async function HomePage() {
           </p>
           <div
             className="hero-rise mt-10 flex flex-wrap items-center gap-6"
-            style={{ "--d": "640ms" } as React.CSSProperties}
+            style={{ "--d": "380ms" } as React.CSSProperties}
           >
             <ButtonLink href="/jobs" size="lg">
               Browse jobs
@@ -77,7 +77,7 @@ export default async function HomePage() {
         </div>
 
         {/* Product evidence, not a stock photo: the limit meter itself. */}
-        <div className="hero-rise" style={{ "--d": "400ms" } as React.CSSProperties}>
+        <div className="hero-rise" style={{ "--d": "240ms" } as React.CSSProperties}>
           <div className="border border-ash bg-ash/60 p-6 rounded-r sm:p-8">
             <LimitMeter
               value={14.5}
@@ -111,7 +111,7 @@ export default async function HomePage() {
       </section>
 
       {/* The wedge: the line, rendered as geometry. */}
-      <div className="hero-wedge" style={{ "--d": "300ms" } as React.CSSProperties}>
+      <div className="hero-wedge" style={{ "--d": "200ms" } as React.CSSProperties}>
         <Seam from="var(--color-void)" to="var(--color-paper)" />
       </div>
 

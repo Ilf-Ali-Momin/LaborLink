@@ -323,6 +323,86 @@ export type Database = {
           },
         ]
       }
+      payments: {
+        Row: {
+          confirmed_hours: number
+          created_at: string
+          created_by: string | null
+          employer_id: string
+          gross_cents: number
+          hourly_wage_cents: number
+          id: string
+          listing_id: string
+          note: string | null
+          paid_on: string
+          period_start: string
+          reference: string | null
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          confirmed_hours: number
+          created_at?: string
+          created_by?: string | null
+          employer_id: string
+          gross_cents: number
+          hourly_wage_cents: number
+          id?: string
+          listing_id: string
+          note?: string | null
+          paid_on: string
+          period_start: string
+          reference?: string | null
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          confirmed_hours?: number
+          created_at?: string
+          created_by?: string | null
+          employer_id?: string
+          gross_cents?: number
+          hourly_wage_cents?: number
+          id?: string
+          listing_id?: string
+          note?: string | null
+          paid_on?: string
+          period_start?: string
+          reference?: string | null
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_employer_id_fkey"
+            columns: ["employer_id"]
+            isOneToOne: false
+            referencedRelation: "employers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string

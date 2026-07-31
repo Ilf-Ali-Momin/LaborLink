@@ -374,6 +374,67 @@ console.log("\nHOURS: employer confirmation boundary");
   check("a different employer cannot alter them", (otherEdit ?? []).length === 0);
 }
 
+console.log("\nPAYMENTS: record-keeping boundary");
+{
+  const period = "2026-07-01";
+  const row = {
+    employer_id: orgA,
+    student_id: studentA.id,
+    listing_id: listingA,
+    period_start: period,
+    confirmed_hours: 3,
+    hourly_wage_cents: 1500,
+    gross_cents: 4500,
+    paid_on: "2026-07-31",
+  };
+
+  // A student must never be able to declare themselves paid.
+  const { error: selfPay } = await studentA.client.from("payments").insert(row);
+  check("student cannot record a payment to themselves", !!selfPay);
+
+  // An unrelated employer must not be able to write against orgA's hire.
+  const { error: foreign } = await employerB.client
+    .from("payments")
+    .insert({ ...row, employer_id: orgB });
+  check("unrelated employer cannot record a payment", !!foreign);
+
+  // The employing employer can.
+  const { error: ok } = await employerA.client.from("payments").insert(row);
+  check("employing employer can record a payment", !ok, ok?.message);
+
+  // The student can see it, but not alter or delete it.
+  const { data: studentView } = await studentA.client
+    .from("payments")
+    .select("gross_cents, paid_on");
+  check("student sees their own payment record", (studentView ?? []).length === 1);
+
+  const { data: studentEdit } = await studentA.client
+    .from("payments")
+    .update({ gross_cents: 999999 })
+    .eq("student_id", studentA.id)
+    .select("id");
+  check("student cannot alter a payment record", (studentEdit ?? []).length === 0);
+
+  const { data: studentDel } = await studentA.client
+    .from("payments")
+    .delete()
+    .eq("student_id", studentA.id)
+    .select("id");
+  check("student cannot delete a payment record", (studentDel ?? []).length === 0);
+
+  // Another employer must not see it at all.
+  const { data: foreignView } = await employerB.client
+    .from("payments")
+    .select("id");
+  check("unrelated employer cannot see it", (foreignView ?? []).length === 0);
+
+  // studentB must not see another student's pay.
+  const { data: otherStudent } = await studentB.client
+    .from("payments")
+    .select("id");
+  check("another student cannot see it", (otherStudent ?? []).length === 0);
+}
+
 console.log("\nAs ANONYMOUS:");
 {
   const { data: listings, error } = await anon

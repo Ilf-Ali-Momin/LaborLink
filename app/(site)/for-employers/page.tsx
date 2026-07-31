@@ -29,19 +29,19 @@ export default function ForEmployersPage() {
           </p>
           <h1 className="mt-6 font-display text-[3.4rem] font-bold leading-[0.95] tracking-[-0.03em] sm:text-display-xl">
             <span className="hero-line-mask">
-              <span className="hero-line block" style={{ "--d": "80ms" } as React.CSSProperties}>
+              <span className="hero-line block" style={{ "--d": "60ms" } as React.CSSProperties}>
                 Hire students.
               </span>
             </span>
             <span className="hero-line-mask">
-              <span className="hero-line block" style={{ "--d": "140ms" } as React.CSSProperties}>
+              <span className="hero-line block" style={{ "--d": "120ms" } as React.CSSProperties}>
                 Keep it legal.
               </span>
             </span>
           </h1>
           <p
             className="hero-rise mt-8 max-w-[60ch] text-body-l text-smoke"
-            style={{ "--d": "500ms" } as React.CSSProperties}
+            style={{ "--d": "200ms" } as React.CSSProperties}
           >
             Werkstudent status saves you the full social security load — until
             an hour limit slips and the contributions come back, with
@@ -51,7 +51,7 @@ export default function ForEmployersPage() {
           </p>
           <div
             className="hero-rise mt-10 flex flex-wrap items-center gap-6"
-            style={{ "--d": "640ms" } as React.CSSProperties}
+            style={{ "--d": "380ms" } as React.CSSProperties}
           >
             <ButtonLink href="/signup?role=employer" size="lg">
               Post a job
@@ -62,7 +62,7 @@ export default function ForEmployersPage() {
           </div>
         </div>
 
-        <div className="hero-rise" style={{ "--d": "400ms" } as React.CSSProperties}>
+        <div className="hero-rise" style={{ "--d": "240ms" } as React.CSSProperties}>
           <div className="border border-hairline bg-paper p-6 rounded-r shadow-none sm:p-8">
             <p className="eyebrow text-smoke">Listing check — example</p>
             <h2 className="mt-3 font-display text-xl font-semibold">
