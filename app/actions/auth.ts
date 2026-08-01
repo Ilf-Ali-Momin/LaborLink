@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { safeInternalPath } from "@/lib/safe-path";
 
 export async function signOut() {
   const supabase = await createClient();
@@ -9,17 +10,12 @@ export async function signOut() {
   redirect("/");
 }
 
-function safeNext(raw: FormDataEntryValue | null): string | null {
-  const value = typeof raw === "string" ? raw : "";
-  // Internal paths only — never redirect off-site.
-  return value.startsWith("/") && !value.startsWith("//") ? value : null;
-}
 
 export async function signUp(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const role = formData.get("role") === "employer" ? "employer" : "student";
-  const next = safeNext(formData.get("next"));
+  const next = safeInternalPath(formData.get("next"));
 
   if (!email || password.length < 8) {
     redirect(`/signup?role=${role}&error=invalid${next ? `&next=${encodeURIComponent(next)}` : ""}`);
@@ -53,7 +49,7 @@ export async function signUp(formData: FormData) {
 export async function signIn(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
-  const next = safeNext(formData.get("next"));
+  const next = safeInternalPath(formData.get("next"));
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });

@@ -4,6 +4,8 @@ import { JobCard, type JobCardData } from "@/components/jobs/JobCard";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/jobs" },
+  openGraph: { url: "/jobs", type: "website" },
   title: "Jobs",
   description:
     "Werkstudent, Minijob, and short-term roles — every listing states its hours and pay against the legal limits.",

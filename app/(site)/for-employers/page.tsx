@@ -10,6 +10,8 @@ import {
 } from "@/lib/compliance/config";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/for-employers" },
+  openGraph: { url: "/for-employers", type: "website" },
   title: "For employers",
   description:
     "Hire Werkstudenten and Minijobbers without breaking labor law. Listings checked against the legal limits, applicants with clear work-authorization answers.",

@@ -3,6 +3,8 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/companies" },
+  openGraph: { url: "/companies", type: "website" },
   title: "Companies",
   description: "Employers hiring students through LaborLink.",
 };

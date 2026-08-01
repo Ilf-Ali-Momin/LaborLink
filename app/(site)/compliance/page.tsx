@@ -15,6 +15,8 @@ import {
 } from "@/lib/compliance/config";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/compliance" },
+  openGraph: { url: "/compliance", type: "website" },
   title: "The rules, in plain language",
   description:
     "Werkstudent, Minijob, short-term employment, and residence permits — the German rules for student work, explained in plain words with sources.",

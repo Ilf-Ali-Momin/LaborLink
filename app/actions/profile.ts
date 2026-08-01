@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { safeInternalPath } from "@/lib/safe-path";
 
 const WORK_AUTH_VALUES = [
   "eu_citizen",
@@ -68,7 +69,7 @@ export async function saveStudentProfile(formData: FormData) {
   revalidatePath("/dashboard/profile");
   revalidatePath("/dashboard");
 
-  const then = String(formData.get("then") ?? "");
-  if (then.startsWith("/") && !then.startsWith("//")) redirect(then);
+  const then = safeInternalPath(formData.get("then"));
+  if (then) redirect(then);
   redirect("/dashboard/profile?saved=1");
 }

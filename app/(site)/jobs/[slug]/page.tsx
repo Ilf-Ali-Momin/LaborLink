@@ -7,6 +7,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionProfile } from "@/lib/auth";
 import { applyToListing } from "@/app/actions/applications";
+import { JobPostingSchema } from "@/components/seo/JobPostingSchema";
 import {
   complianceReadForListing,
   formatEurCents,
@@ -26,11 +27,27 @@ export async function generateMetadata({
   const supabase = await createClient();
   const { data } = await supabase
     .from("listings")
-    .select("title, employers(name)")
+    .select("title, description, employers(name)")
     .eq("slug", slug)
     .maybeSingle();
   if (!data) return { title: "Job not found" };
-  return { title: `${data.title} at ${data.employers?.name}` };
+  const company = data.employers?.name ?? "";
+  const summary = (data.description ?? "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 155);
+  const title = `${data.title} at ${company}`;
+  return {
+    title,
+    description: summary || `${data.title} at ${company}. Hours and pay stated against the German legal limits.`,
+    alternates: { canonical: `/jobs/${slug}` },
+    openGraph: {
+      type: "article",
+      title,
+      description: summary,
+      url: `/jobs/${slug}`,
+    },
+  };
 }
 
 export default async function JobDetailPage({
@@ -75,6 +92,18 @@ export default async function JobDetailPage({
 
   return (
     <div className="bg-paper text-void" data-ground="paper">
+      <JobPostingSchema
+        title={listing.title}
+        description={listing.description}
+        slug={listing.slug}
+        publishedAt={listing.published_at}
+        city={listing.city}
+        remote={listing.remote}
+        hourlyWageCents={listing.hourly_wage_cents}
+        hoursPerWeek={hours}
+        employerName={listing.employers?.name ?? ""}
+        employerSlug={listing.employers?.slug ?? ""}
+      />
       <section className="bg-void text-paper">
         <div className="mx-auto max-w-7xl px-6 py-14 lg:px-10">
           <Link href="/jobs" className="link-grow text-sm text-paper/70">

@@ -10,6 +10,7 @@ export const metadata = { title: "Payments" };
 
 const errorMessages: Record<string, string> = {
   invalid: "Check the payment date and amounts.",
+  nohours: "No confirmed hours for that month, so there is nothing to pay yet.",
   failed: "Saving failed. Try again.",
 };
 
@@ -134,9 +135,6 @@ export default async function EmployerPaymentsPage({
                   <input type="hidden" name="student_id" value={p.studentId} />
                   <input type="hidden" name="listing_id" value={p.listingId} />
                   <input type="hidden" name="period_start" value={p.periodStart} />
-                  <input type="hidden" name="confirmed_hours" value={p.hours} />
-                  <input type="hidden" name="hourly_wage_cents" value={p.hourlyWageCents} />
-                  <input type="hidden" name="gross_cents" value={p.grossCents} />
                   <div>
                     <label htmlFor={`d-${p.key}`} className="text-xs text-smoke">
                       Paid on

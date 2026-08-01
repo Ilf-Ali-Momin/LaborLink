@@ -3,6 +3,8 @@ import Link from "next/link";
 import { ButtonLink } from "@/components/ui/Button";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/pricing" },
+  openGraph: { url: "/pricing", type: "website" },
   title: "Pricing",
   description:
     "Employers pay for reach and tooling. Students never pay anything.",
