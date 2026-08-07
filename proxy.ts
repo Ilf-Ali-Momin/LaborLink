@@ -20,6 +20,22 @@ export async function proxy(request: NextRequest) {
   const needsAuth =
     path.startsWith("/dashboard") || path.startsWith("/employer");
 
+  // Supabase only honours an explicit redirect target if it is on the
+  // project's allowlist; otherwise it drops the user on the Site URL root
+  // carrying "?code=" or "?token_hash=". Catch those anywhere and hand them
+  // to the confirm route, so a misconfigured dashboard cannot strand
+  // someone on a page that ignores their confirmation link.
+  if (path !== "/auth/confirm") {
+    const params = request.nextUrl.searchParams;
+    const code = params.get("code");
+    const tokenHash = params.get("token_hash");
+    if (code || tokenHash) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/auth/confirm";
+      return NextResponse.redirect(url);
+    }
+  }
+
   // Fast path for visitors with no session at all. Supabase stores its
   // session in cookies prefixed "sb-", so their absence is proof there is
   // nothing to validate — and validating costs a network round-trip to
