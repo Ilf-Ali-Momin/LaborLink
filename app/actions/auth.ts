@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { safeInternalPath } from "@/lib/safe-path";
+import { siteUrl } from "@/lib/site";
 
 export async function signOut() {
   const supabase = await createClient();
@@ -25,9 +26,14 @@ export async function signUp(formData: FormData) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    // The role is written into the JWT metadata once, at signup; the
-    // database trigger turns it into a permanent profiles.role.
-    options: { data: { role } },
+    options: {
+      // The role is written into the JWT metadata once, at signup; the
+      // database trigger turns it into a permanent profiles.role.
+      data: { role },
+      // Without this, Supabase falls back to the project's Site URL — which
+      // is how confirmation emails ended up pointing at localhost.
+      emailRedirectTo: `${siteUrl()}/auth/confirm${next ? `?next=${encodeURIComponent(next)}` : ""}`,
+    },
   });
 
   if (error) {

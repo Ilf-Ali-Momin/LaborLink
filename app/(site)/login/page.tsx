@@ -24,7 +24,13 @@ export default async function LoginPage({
       <div className="mx-auto max-w-md px-6 py-20 lg:px-0">
         <h1 className="font-display text-display-l">Log in.</h1>
 
-        {params.error ? (
+        {params.error === "confirm" ? (
+          <p className="mt-6 border-l-2 border-over pl-4 text-sm">
+            That confirmation link did not work. It may have expired or
+            already been used. Sign up again to get a new one, or log in if
+            your email is already confirmed.
+          </p>
+        ) : params.error ? (
           <p className="mt-6 border-l-2 border-over pl-4 text-sm">
             We could not log you in. Check your email and password.
             <br />
