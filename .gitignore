@@ -11,3 +11,9 @@ out/
 *.tsbuildinfo
 next-env.d.ts
 .env*
+
+# Agent tooling state and logs — not project source.
+.claude-flow/
+.agents/
+.claude/skills/
+skills-lock.json
