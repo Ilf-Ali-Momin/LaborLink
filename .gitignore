@@ -23,4 +23,5 @@ skills-lock.json
 
 # Project documentation kept local, not published.
 *.md
+!README.md
 !.github/**/*.md
