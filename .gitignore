@@ -20,3 +20,7 @@ skills-lock.json
 .claude/skills/
 .claude/proven-config.json
 .claude/.proven-config-version
+
+# Project documentation kept local, not published.
+*.md
+!.github/**/*.md
