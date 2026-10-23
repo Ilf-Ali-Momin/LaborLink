@@ -12,8 +12,11 @@ out/
 next-env.d.ts
 .env*
 
-# Agent tooling state and logs — not project source.
+# Agent tooling state and third-party plugin content — not project source.
+# .claude/launch.json is kept: it is this project's dev-server config.
 .claude-flow/
 .agents/
-.claude/skills/
 skills-lock.json
+.claude/skills/
+.claude/proven-config.json
+.claude/.proven-config-version
